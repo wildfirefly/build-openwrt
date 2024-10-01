@@ -29,8 +29,28 @@ sed -i 's/192.168.1.1/192.168.100.99/g' package/base-files/files/bin/config_gene
 # ------------------------------- Other started -------------------------------
 #
 # Add luci-app-amlogic
-svn co https://github.com/ophub/luci-app-amlogic/trunk/luci-app-amlogic package/luci-app-amlogic
-svn co https://github.com/vernesong/OpenClash/trunk/luci-app-openclash package/luci-app-openclash
+#svn co https://github.com/ophub/luci-app-amlogic/trunk/luci-app-amlogic package/luci-app-amlogic
+
+ # cd进入Clone项目
+ mkdir package/luci-app-openclash
+ cd package/luci-app-openclash
+ git init
+ git remote add -f origin https://github.com/vernesong/OpenClash.git
+ git config core.sparsecheckout true
+ echo "luci-app-openclash" >> .git/info/sparse-checkout
+ git pull --depth 1 origin master
+ git branch --set-upstream-to=origin/master master
+
+ # 编译 po2lmo (如果有po2lmo可跳过)
+ pushd luci-app-openclash/tools/po2lmo
+ make && sudo make install
+ popd
+
+ # 回退到主项目目录
+ cd ../..
+
+
+
 # Fix runc version error
 # rm -rf ./feeds/packages/utils/runc/Makefile
 # svn export https://github.com/openwrt/packages/trunk/utils/runc/Makefile ./feeds/packages/utils/runc/Makefile
